@@ -36,6 +36,13 @@ class TodoRepository
         $statement->bindParam(':name', $name);
         $statement->execute();
     }
+
+    public function deleteTodo($id)
+    {
+        $statement = $this->pdo->prepare("DELETE FROM todo WHERE id = :id");
+        $statement->bindParam(':id', $id);
+        $statement->execute();
+    }
 }
 
 $app = AppFactory::create();
@@ -56,6 +63,18 @@ $app->post('/', function (Request $request, Response $response) use ($todoReposi
     }
 
 
+    return $response->withHeader('Location', '/')->withStatus(302);
+});
+
+$app->post('/delete', function (Request $request, Response $response) use ($todoRepository) {
+    $parsedBody = $request->getParsedBody();
+    $todoId = $parsedBody['todo_id'] ?? null;
+
+    if ($todoId) {
+        $todoRepository->deleteTodo($todoId);
+    }
+
+    // Redirigez après avoir supprimé la ToDo
     return $response->withHeader('Location', '/')->withStatus(302);
 });
 
