@@ -1,0 +1,17 @@
+{
+    "name": "zefflo99/php-example2",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Zefflo99\\PhpExample2\\": "src/"
+        }
+    },
+    "require": {
+        "slim/twig-view": "^3.3",
+        "slim/psr7": "^1.6",
+        "slim/slim": "^4.12",
+        "ext-pdo": "*",
+        "symfony/debug-bundle": "^7.0"
+    }
+}
+
