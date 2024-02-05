@@ -11,7 +11,7 @@
         "slim/psr7": "^1.6",
         "slim/slim": "^4.12",
         "ext-pdo": "*",
-        "symfony/debug-bundle": "^7.0"
+        "symfony/debug-bundle": "^7.0",
+        "symfony/var-dumper": "^7.0"
     }
 }
-
