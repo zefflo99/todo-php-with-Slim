@@ -13,13 +13,13 @@ class TodoRepository
         $this->pdo = $pdo;
     }
 
-    // Récupérer toutes les tâches depuis la base de données
+
     public function getAllTodos()
     {
         return $this->pdo->query("SELECT * FROM todo")->fetchAll();
     }
 
-    // Ajouter une nouvelle tâche à la base de données
+
     public function addTodo($name)
     {
         $statement = $this->pdo->prepare("INSERT INTO todo (name) VALUES (:name)");
@@ -27,7 +27,7 @@ class TodoRepository
         $statement->execute();
     }
 
-    // Supprimer une tâche de la base de données par ID
+
     public function deleteTodo($id)
     {
         echo "Deleting todo with id: $id"; // Message de débogage
