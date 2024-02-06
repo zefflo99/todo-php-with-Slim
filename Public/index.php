@@ -24,6 +24,12 @@ class TodoRepository
     {
         $this->pdo = $pdo;
     }
+    public function getTodo($id)
+    {
+        $statement = $this->pdo->prepare("SELECT * FROM todo where id = :id");
+        $statement->execute(['id' => $id]);
+        return $statement->fetch();
+    }
 
     public function getAllTodos()
     {
@@ -33,23 +39,22 @@ class TodoRepository
     public function addTodo($name)
     {
         $statement = $this->pdo->prepare("INSERT INTO todo (name) VALUES (:name)");
-        $statement->bindParam(':name', $name);
-        $statement->execute();
+        $statement->execute(['name' => $name]);
     }
 
     public function editTodo($id, $name)
     {
-        $statement = $this->pdo->prepare("UPDATE todo SET name = :name WHERE id = :id");
-        $statement->bindParam(':name', $name);
-        $statement->bindParam(':id', $id);
-        $statement->execute();
+        if ($this->getTodo($id)["name"] != $name)
+        {
+            $statement = $this->pdo->prepare("UPDATE todo SET name = :name WHERE id = :id");
+            $statement->execute(['name' => $name, 'id' => $id]);
+        }
     }
 
     public function deleteTodo($id)
     {
         $statement = $this->pdo->prepare("DELETE FROM todo WHERE id = :id");
-        $statement->bindParam(':id', $id);
-        $statement->execute();
+        $statement->execute(['id' => $id]);
     }
 }
 
@@ -73,28 +78,21 @@ $app->post('/', function (Request $request, Response $response) use ($todoReposi
     return $response->withHeader('Location', '/')->withStatus(302);
 });
 
+$app->post('/delete', function (Request $request, Response $response) use ($todoRepository, $pdo) {
+    $pdo->prepare("delete from todo where id = ?")->execute([$_POST["todoId"]]);
+    return $response->withHeader('Location', '/')->withStatus(302);
+});
+
+
 $app->post('/edit', function (Request $request, Response $response) use ($todoRepository) {
-    $parsedBody = $request->getParsedBody();
 
-    if (isset($parsedBody['confirmEdit'])) {
-        $newValue = $parsedBody['editTodo'];
-        $todoId = $parsedBody['todoId'];
-        $todoRepository->editTodo($todoId, $newValue);
-    }
+    $newValue = $_POST['editTodo'];
+    $todoId = $_POST['todoId'];
+    $todoRepository->editTodo($todoId, $newValue);
 
     return $response->withHeader('Location', '/')->withStatus(302);
 });
 
-$app->post('/delete', function (Request $request, Response $response) use ($todoRepository) {
-    $parsedBody = $request->getParsedBody();
-    $todoId = $parsedBody['todo_id'] ?? null;
-
-    if ($todoId) {
-        $todoRepository->deleteTodo($todoId);
-    }
-
-    return $response->withHeader('Location', '/')->withStatus(302);
-});
 
 $app->get('/', function (Request $request, Response $response) use ($todoRepository) {
     $todos = $todoRepository->getAllTodos();

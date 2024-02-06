@@ -30,12 +30,10 @@ class TodoRepository
 
     public function deleteTodo($id)
     {
-        echo "Deleting todo with id: $id"; // Message de débogage
+        echo "Before deleting todo with id: $id"; // Message de débogage
         $statement = $this->pdo->prepare("DELETE FROM todo WHERE id = :id");
         $statement->bindParam(':id', $id);
         $statement->execute();
-
-        // Message de débogage
-        echo "Deleted todo with id: $id";
+        echo "After deleting todo with id: $id"; // Message de débogage
     }
 }
