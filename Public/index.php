@@ -121,4 +121,23 @@ $app->get('/', function (Request $request, Response $response) use ($todoReposit
     ]);
 });
 
+
+// search tasks
+
+$app->get('/search', function (Request $request, Response $response) use ($todoRepository) {
+    $search = $_GET['search'];
+    $todos = $todoRepository->getAllTodos();
+    $searchedTodos = [];
+    foreach ($todos as $todo) {
+        if (strpos($todo['name'], $search) !== false) {
+            array_push($searchedTodos, $todo);
+        }
+    }
+
+    $view = Twig::fromRequest($request);
+    return $view->render($response, 'todo.twig', [
+        'todos' => $searchedTodos
+    ]);
+});
+
 $app->run();

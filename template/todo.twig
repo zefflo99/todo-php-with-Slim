@@ -13,6 +13,14 @@
     <div class="card todo-container">
         <h1 class="card-header text-center text-primary">Welcome to my Todo list</h1>
 
+        <form action="/search" method="get" class="card-body">
+            <div class="mb-3">
+                <label for="search" class="form-label">Search:</label>
+                <input type="text" id="search" name="search" class="form-control" placeholder="Search for a todo">
+            </div>
+            <button type="submit" name="submitSearch" class="btn btn-primary">Search</button>
+            </form>
+
         <form action="/" method="post" class="card-body">
             <div class="mb-3">
                 <label for="todo" class="form-label">Todo:</label>
