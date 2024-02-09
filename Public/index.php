@@ -1,11 +1,15 @@
 <?php
+session_start();
+require __DIR__ . '/../vendor/autoload.php';
+
+// if ($_SERVER['REQUEST_METHOD'] === 'GET') dump($_SESSION);
+
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 use Slim\Views\Twig;
 use Slim\Views\TwigMiddleware;
 
-require __DIR__ . '/../vendor/autoload.php';
 
 $host = __DIR__ . '/../database.db';
 $dsn = "sqlite:$host";
@@ -41,6 +45,7 @@ class TodoRepository
     {
         $statement = $this->pdo->prepare("insert into todo (name) values (:name)");
         $statement->execute(['name' => $name]);
+        $_SESSION['message'] = "Task added successfully";
     }
 
     public function editTodo($id, $name)
@@ -67,6 +72,8 @@ $app->addRoutingMiddleware();
 $errorMiddleware = $app->addErrorMiddleware(true, true, true);
 
 $todoRepository = new TodoRepository($pdo);
+
+
 
 $app->post('/', function (Request $request, Response $response) use ($todoRepository) {
     $parsedBody = $request->getParsedBody();
@@ -99,25 +106,54 @@ $app->post('/edit', function (Request $request, Response $response) use ($todoRe
     return $response->withHeader('Location', '/')->withStatus(302);
 });
 
-$app->get('/sort', function (Request $request, Response $response) use ($todoRepository) {
+$app->get('/sortAZ', function (Request $request, Response $response) use ($todoRepository) {
     $todos = $todoRepository->getAllTodos();
 
     usort($todos, function ($a, $b) {
         return strcmp($a['name'], $b['name']);
     });
 
+    $message = $_SESSION['message'];
+    unset($_SESSION['message']);
+
     $view = Twig::fromRequest($request);
     return $view->render($response, 'todo.twig', [
-        'todos' => $todos
+        'todos' => $todos,
+        'message' => $message
     ]);
 });
+
+
+$app->get('/sortZA', function (Request $request, Response $response) use ($todoRepository) {
+    $todos = $todoRepository->getAllTodos();
+
+    usort($todos, function ($a, $b) {
+        return strcmp($b['name'], $a['name']);
+    });
+
+    $message = $_SESSION['message'];
+    unset($_SESSION['message']);
+
+    $view = Twig::fromRequest($request);
+    return $view->render($response, 'todo.twig', [
+        'todos' => $todos,
+        'message' => $message
+    ]);
+});
+
+
+
 
 $app->get('/', function (Request $request, Response $response) use ($todoRepository) {
     $todos = $todoRepository->getAllTodos();
 
+    $message = $_SESSION['message'];
+    unset($_SESSION['message']);
+
     $view = Twig::fromRequest($request);
     return $view->render($response, 'todo.twig', [
-        'todos' => $todos
+        'todos' => $todos,
+        'message' => $message
     ]);
 });
 

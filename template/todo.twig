@@ -11,6 +11,12 @@
 <body>
 <div class="container mt-5">
     <div class="card todo-container">
+        {% if message %}
+            <div class="alert alert-success" role="alert">
+                {{ message }}
+            </div>
+        {% endif %}
+
         <h1 class="card-header text-center text-primary">Welcome to my Todo list</h1>
 
         <form action="/search" method="get" class="card-body">
@@ -34,8 +40,12 @@
         </form>
 
 
-        <form action="/sort" method="get" class="card-body">
+        <form action="/sortAZ" method="get" class="card-body">
             <button type="submit" class="btn btn-primary">A-Z</button>
+        </form>
+
+        <form action="/sortZA" method="get" class="card-body">
+            <button type="submit" class="btn btn-info">Z-A</button>
         </form>
 
 
