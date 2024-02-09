@@ -27,19 +27,19 @@ class TodoRepository
 
     public function getTodo($id)
     {
-        $statement = $this->pdo->prepare("SELECT * FROM todo where id = :id");
+        $statement = $this->pdo->prepare("select * from todo where id = :id");
         $statement->execute(['id' => $id]);
         return $statement->fetch();
     }
 
     public function getAllTodos()
     {
-        return $this->pdo->query("SELECT * FROM todo")->fetchAll();
+        return $this->pdo->query("select * from todo")->fetchAll();
     }
 
     public function addTodo($name)
     {
-        $statement = $this->pdo->prepare("INSERT INTO todo (name) VALUES (:name)");
+        $statement = $this->pdo->prepare("insert into todo (name) values (:name)");
         $statement->execute(['name' => $name]);
     }
 
@@ -47,14 +47,14 @@ class TodoRepository
     {
         if ($this->getTodo($id)["name"] != $name)
         {
-            $statement = $this->pdo->prepare("UPDATE todo SET name = :name WHERE id = :id");
+            $statement = $this->pdo->prepare("update todo set name = :name where id = :id");
             $statement->execute(['name' => $name, 'id' => $id]);
         }
     }
 
     public function deleteTodo($id)
     {
-        $statement = $this->pdo->prepare("DELETE FROM todo WHERE id = :id");
+        $statement = $this->pdo->prepare("delete from todo where id = :id");
         $statement->execute(['id' => $id]);
     }
 }
@@ -80,9 +80,16 @@ $app->post('/', function (Request $request, Response $response) use ($todoReposi
 });
 
 $app->post('/delete', function (Request $request, Response $response) use ($todoRepository, $pdo) {
-    $pdo->prepare("DELETE FROM todo WHERE id = ?")->execute([$_POST["todoId"]]);
+    $pdo->prepare("delete from todo where id = ?")->execute([$_POST["todoId"]]);
     return $response->withHeader('Location', '/')->withStatus(302);
 });
+
+
+$app->post('/deleteAll', function (Request $request, Response $response) use ($todoRepository, $pdo) {
+    $pdo->prepare("delete from todo")->execute();
+    return $response->withHeader('Location', '/')->withStatus(302);
+});
+
 
 $app->post('/edit', function (Request $request, Response $response) use ($todoRepository) {
     $newValue = $_POST['editTodo'];
