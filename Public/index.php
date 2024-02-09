@@ -24,6 +24,7 @@ class TodoRepository
     {
         $this->pdo = $pdo;
     }
+
     public function getTodo($id)
     {
         $statement = $this->pdo->prepare("SELECT * FROM todo where id = :id");
@@ -79,13 +80,11 @@ $app->post('/', function (Request $request, Response $response) use ($todoReposi
 });
 
 $app->post('/delete', function (Request $request, Response $response) use ($todoRepository, $pdo) {
-    $pdo->prepare("delete from todo where id = ?")->execute([$_POST["todoId"]]);
+    $pdo->prepare("DELETE FROM todo WHERE id = ?")->execute([$_POST["todoId"]]);
     return $response->withHeader('Location', '/')->withStatus(302);
 });
 
-
 $app->post('/edit', function (Request $request, Response $response) use ($todoRepository) {
-
     $newValue = $_POST['editTodo'];
     $todoId = $_POST['todoId'];
     $todoRepository->editTodo($todoId, $newValue);
@@ -93,6 +92,18 @@ $app->post('/edit', function (Request $request, Response $response) use ($todoRe
     return $response->withHeader('Location', '/')->withStatus(302);
 });
 
+$app->get('/sort', function (Request $request, Response $response) use ($todoRepository) {
+    $todos = $todoRepository->getAllTodos();
+
+    usort($todos, function ($a, $b) {
+        return strcmp($a['name'], $b['name']);
+    });
+
+    $view = Twig::fromRequest($request);
+    return $view->render($response, 'todo.twig', [
+        'todos' => $todos
+    ]);
+});
 
 $app->get('/', function (Request $request, Response $response) use ($todoRepository) {
     $todos = $todoRepository->getAllTodos();
