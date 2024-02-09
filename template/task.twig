@@ -1,0 +1,17 @@
+<li class="list-group-item d-flex justify-content-between align-items-center">
+    <form action="/edit" method="post" class="d-flex flex-row gap-1">
+        <input class="form-check-input edit-checkbox" type="checkbox" name="editCheckbox" id="todo{{ todo.id }}">
+        <input type="submit" name="todoId" value="{{ todo.id }}" id="confirmEdit{{ todo.id }}" class="d-none">
+        <label class="form-check-label" for="todo{{ todo.id }}">
+            <input type="text" class="form-control edit-input" name="editTodo" value="{{ todo.name }}">
+        </label>
+    </form>
+    <div class="edit-buttons">
+        <label for="confirmEdit{{ todo.id }}" class="btn btn-success btn-sm ms-2 confirm-edit">Edit</label>
+        <form action="/delete" method="post" class="edit-form">
+            <button type="submit" class="btn btn-danger btn-sm ms-2 delete-button" name="todoId" value="{{ todo.id }}">
+                Delete
+            </button>
+        </form>
+    </div>
+</li>

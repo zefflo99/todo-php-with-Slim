@@ -1,0 +1,16 @@
+<div class="container mt-5">
+    <div class="card todo-container">
+
+        <h1 class="card-header text-center text-primary">Welcome to my Todo list</h1>
+
+        {% include 'messages.twig' %}
+
+        {% include 'form.twig' %}
+
+        <ul class="list-group list-group-flush">
+            {% for todo in todos %}
+                {% include 'task.twig' %}
+            {% endfor %}
+        </ul>
+    </div>
+</div>

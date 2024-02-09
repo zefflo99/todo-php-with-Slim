@@ -1,0 +1,28 @@
+<form action="/search" method="get" class="card-body">
+    <div class="mb-3">
+        <label for="search" class="form-label">Search:</label>
+        <input type="text" id="search" name="search" class="form-control" placeholder="Search for a todo">
+    </div>
+    <button type="submit" name="submitSearch" class="btn btn-primary">Search</button>
+</form>
+
+<form action="/" method="post" class="card-body">
+    <div class="mb-3">
+        <label for="todo" class="form-label">Todo:</label>
+        <input type="text" id="todo" name="todo" class="form-control" placeholder="Enter a todo" required>
+    </div>
+    <button type="submit" name="submitTodo" class="btn btn-success">Add Todo</button>
+
+</form>
+<form action="/deleteAll" method="post" class="card-body">
+    <button type="submit" name="deleteAll" class="btn btn-danger">Reset ALL</button>
+</form>
+
+
+<form action="/sortAZ" method="get" class="card-body">
+    <button type="submit" class="btn btn-primary">A-Z</button>
+</form>
+
+<form action="/sortZA" method="get" class="card-body">
+    <button type="submit" class="btn btn-info">Z-A</button>
+</form>
